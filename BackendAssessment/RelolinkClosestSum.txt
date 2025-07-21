@@ -1,0 +1,74 @@
+namespace RelolinkAssessment
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var solver = new Solution();
+
+            var testCases = new List<(int[] nums, int target)>
+            {
+                (new[] { -1, 2, 1, -4 }, 1),
+                (new[] { 0, 0, 0 }, 1),
+                (new[] { 1, 1, 1, 0 }, -100),
+                (new[] { -3, -2, -5, 3, -4 }, -1),
+                (new[] { 4, 0, 5, -5, 3, 3, 0, -4, -5 }, -2)
+            };
+
+            for (int i = 0; i < testCases.Count; i++)
+            {
+                var (nums, target) = testCases[i];
+
+                try
+                {
+                    int result = solver.ThreeSumClosest(nums, target);
+                    Console.WriteLine($"Test Case {i + 1}: Closest sum to {target} = {result}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Test Case {i + 1} failed: {ex.Message}");
+                }
+            }
+
+            Console.WriteLine("\nPress any key to exit.");
+            Console.ReadKey();
+        }
+    }
+
+    public class Solution
+    {
+        public int ThreeSumClosest(int[] nums, int target)
+        {
+            if (nums == null || nums.Length < 3)
+                throw new ArgumentException("Input array must contain at least three elements.");
+
+            Array.Sort(nums);
+            int closest = nums[0] + nums[1] + nums[2];
+
+            for (int i = 0; i < nums.Length - 2; i++)
+            {
+                int left = i + 1;
+                int right = nums.Length - 1;
+
+                while (left < right)
+                {
+                    int currentSum = nums[i] + nums[left] + nums[right];
+
+                    if (Math.Abs(currentSum - target) < Math.Abs(closest - target))
+                    {
+                        closest = currentSum;
+                    }
+
+                    if (currentSum < target)
+                        left++;
+                    else if (currentSum > target)
+                        right--;
+                    else
+                        return currentSum; // exact match
+                }
+            }
+
+            return closest;
+        }
+    }
+}

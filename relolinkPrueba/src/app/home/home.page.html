@@ -1,27 +1,124 @@
-<ion-header>
-<ion-toolbar>
-<ion-title>Step Form</ion-title>
-</ion-toolbar>
-</ion-header>
- 
-  <ion-content class="ion-padding">
-<form>
-<div *ngFor="let step of steps">
-<ion-item>
-<ion-label>{{ 'Step ' + step }}</ion-label>
-<ion-select
-            [(ngModel)]="formValues[step]"
-            name="step{{step}}"
-            placeholder="Select option"
->
-<ion-select-option *ngFor="let opt of options" [value]="opt">
-              {{ opt }}
-</ion-select-option>
-</ion-select>
-</ion-item>
-</div>
-</form>
- 
-    <ion-button expand="block">Submit</ion-button>
- 
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="form-wrapper">
+
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Step Form</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+        <!-- Progress bar and step Nav -->
+        <div class="step-header">
+          <div 
+            class="step-indicator" 
+            *ngFor="let step of totalStepsArray; let i = index"
+            [class.active]="currentStep === i + 1"
+            [class.completed]="currentStep > i + 1"
+            (click)="goToStep(i + 1)">
+            {{ i + 1 }}
+          </div>
+        </div>
+
+        <form>
+
+          <!-- Step 1 -->
+          <ion-card *ngIf="currentStep === 1" class="step-card">
+            <ion-card-header>
+              <ion-card-title>Step 1: Name</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item>
+                <ion-label position="floating">Name</ion-label>
+                <ion-input [(ngModel)]="formValues.name" name="name" (ionBlur)="checkStepValidity()"></ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label position="floating">Last Name</ion-label>
+                <ion-input [(ngModel)]="formValues.lastName" name="lastName" (ionBlur)="checkStepValidity()"></ion-input>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Step 2 -->
+          <ion-card *ngIf="currentStep === 2" class="step-card">
+            <ion-card-header>
+              <ion-card-title>Step 2: Location</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item>
+                <ion-label>Country</ion-label>
+                <ion-select [(ngModel)]="formValues.country" name="country" 
+                            (ionChange)="onCountryChange(formValues.country); checkStepValidity()">
+                  <ion-select-option *ngFor="let c of countries" [value]="c">{{ c }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-label>City</ion-label>
+                <ion-select [(ngModel)]="formValues.city" name="city" 
+                            (ionChange)="checkStepValidity()">
+                  <ion-select-option *ngFor="let city of cityOptions" [value]="city">{{ city }}</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Step 3 -->
+          <ion-card *ngIf="currentStep === 3" class="step-card">
+            <ion-card-header>
+              <ion-card-title>Step 3: Phone Number</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item>
+                <ion-label position="floating">Phone Number</ion-label>
+                <ion-input
+                  type="tel"
+                  inputmode="numeric"
+                  [(ngModel)]="formValues.phoneNumber"
+                  name="phoneNumber"
+                  (ionInput)="onPhoneInput($event)"
+                  (ionBlur)="checkStepValidity()">
+                </ion-input>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Step 4 -->
+          <ion-card *ngIf="currentStep === 4" class="step-card">
+            <ion-card-header>
+              <ion-card-title>Step 4: Email</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-item>
+                <ion-label position="floating">Email</ion-label>
+                <ion-input type="email" [(ngModel)]="formValues.email" name="email" 
+                          (ionBlur)="checkStepValidity()"></ion-input>
+              </ion-item>
+            </ion-card-content>
+          </ion-card>
+
+          <!-- Step 5: Confirmation -->
+      <ion-card *ngIf="currentStep === 5" class="step-card">
+        <ion-card-header>
+          <ion-card-title>Review Your Information</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item><strong>Full Name: &nbsp;</strong> {{ formValues.name }} {{ formValues.lastName }}</ion-item>
+            <ion-item><strong>Country: &nbsp;</strong> {{ formValues.country }}</ion-item>
+            <ion-item><strong>City: &nbsp;</strong> {{ formValues.city }}</ion-item>
+            <ion-item><strong>Phone: &nbsp;</strong> {{ formValues.phoneNumber }}</ion-item>
+            <ion-item><strong>Email: &nbsp;</strong> {{ formValues.email }}</ion-item>
+          </ion-list>
+
+          <ion-button expand="block" color="success" (click)="onSubmit()">
+            Submit
+          </ion-button>
+
+          <!-- Optional: Go Back Button -->
+          <ion-button expand="block" fill="outline" color="medium" (click)="prevStep()">
+            ← Back
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </form>
+  </div>
 </ion-content>

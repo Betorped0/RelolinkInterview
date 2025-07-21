@@ -1,0 +1,68 @@
+
+
+namespace RelolinkAssessment
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Starting...");
+            var solver = new Solution();
+
+            var testCases = new List<(int[] nums, int target)>
+            {
+                Tuple.Create(new[] { 2, 7, 11, 15 }, 9).ToValueTuple(),
+                Tuple.Create(new[] { 3, 2, 4 }, 6).ToValueTuple(),
+                Tuple.Create(new[] { 1, 5, 3, 8 }, 6).ToValueTuple(),
+                Tuple.Create(new[] { 0, -1, 2, -3, 1 }, -2).ToValueTuple(),
+                Tuple.Create(new[] { 10, 20, 30, 40, 50 }, 90).ToValueTuple()
+            };
+
+            for (int i = 0; i < testCases.Count; i++)
+            {
+                var (nums, target) = testCases[i];
+
+                try
+                {
+                    var result = solver.TwoSum(nums, target);
+                    Console.WriteLine($"Test Case {i + 1}: [{result[0]}, {result[1]}] => {nums[result[0]]} + {nums[result[1]]} = {target}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Test Case {i + 1} failed: {ex.Message}");
+                }
+            }
+
+            Console.WriteLine("\nPress any key to exit.");
+            Console.ReadKey();
+        }
+    }
+
+    public class Solution
+    {
+        public int[] TwoSum(int[] nums, int target)
+        {
+            if (nums == null || nums.Length < 2)
+                throw new ArgumentException("Input array must contain at least two elements.");
+
+            var seen = new Dictionary<int, int>();
+
+            for (int i = 0; i < nums.Length; i++)
+            {
+                int complement = target - nums[i];
+
+                if (seen.ContainsKey(complement))
+                {
+                    return new[] { seen[complement], i };
+                }
+
+                if (!seen.ContainsKey(nums[i]))
+                {
+                    seen[nums[i]] = i;
+                }
+            }
+
+            throw new InvalidOperationException("No two numbers add up to the target.");
+        }
+    }
+}
